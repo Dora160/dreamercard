@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Dreamer Card by Dora</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #fbfbff;
+      display: flex;
+      justify-content: center;
+      height: 100vh;
+      overflow: auto;
+    }
+
+    .container {
+      perspective: 1000px;
+      width: 90vw;
+      max-width: 400px;
+      margin-top: 20px;
+    }
+
+    .flipper {
+      width: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease;
+    }
+
+    .flipper.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .face {
+    position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .face img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .back {
+      transform: rotateY(180deg);
+    }
+
+    /* Ligths effects*/
+.front::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+  z-index: 2;
+  pointer-events: none;
+  transition: left 0.5s ease;
+}
+
+/* Hover effects */
+.container:hover .front::before {
+  left: 100%;
+  transition: left 0.75s ease-in-out;
+}
+.back::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+  z-index: 2;
+  pointer-events: none;
+  transition: left 0.5s ease;
+}
+
+
+.container:hover .back::before {
+  left: 100%;
+  transition: left 0.75s ease-in-out;
+}
+  </style>
+</head>
+<body>
+
+<div class="container" onclick="flipCard(this)">
+  <div class="flipper">
+    <div class="face front">
+      <img src="dreamerscard1.png" alt="Előlap">
+    </div>
+    <div class="face back">
+      <img src="dreamerscard2.png" alt="Hátlap">
+    </div>
+  </div>
+</div>
+
+<script>
+  const container = document.querySelector('.container');
+  const flipper = container.querySelector('.flipper');
+
+  // Esemény kattintásra – megfordít
+  function flipCard(container) {
+    flipper.classList.toggle('flipped');
+  }
+
+  // Esemény egérmozgásra – dőlés
+  container.addEventListener('mousemove', (e) => {
+    const rect = container.getBoundingClientRect();
+    const x = e.clientX - rect.left; // Egér pozíció a konténerhez képest
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = -(y - centerY) / 20;
+    const rotateY = (x - centerX) / 20;
+
+    // Ha meg van fordítva, tartsuk meg az Y-tengelyes flip-et
+    const baseRotation = flipper.classList.contains('flipped') ? 180 : 0;
+
+    flipper.style.transform = `rotateY(${baseRotation}deg) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  });
+
+  // Ha az egér elhagyja a kártyát – állítsuk vissza
+  container.addEventListener('mouseleave', () => {
+    const baseRotation = flipper.classList.contains('flipped') ? 'rotateY(180deg)' : 'rotateY(0deg)';
+    flipper.style.transform = baseRotation;
+  });
+</script>
+
+</body>
+</html>
